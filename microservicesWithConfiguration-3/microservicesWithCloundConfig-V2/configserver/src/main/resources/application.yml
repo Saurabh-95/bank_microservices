@@ -19,6 +19,11 @@ spring:
           #for public git repositories user name and password not required
           username: ${GITHUB_USERNAME}
           password: ${GITHUB_TOKEN}
+  rabbitmq:
+    host: "localhost"
+    port: 5672
+    username: guest
+    password: guest
 
 
 encrypt:

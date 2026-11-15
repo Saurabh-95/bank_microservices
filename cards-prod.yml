@@ -1,0 +1,11 @@
+build:
+  version: c-1.2.3.4
+
+cards:
+  message: Welcome in the Card microservice on Prod
+  contactInfo:
+    name: "Devesh Singh- P.O."
+    email: "Devesh@abc.com"
+  phones:
+    - 5555555555
+    - 2222222222

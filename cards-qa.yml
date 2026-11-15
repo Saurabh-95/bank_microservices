@@ -1,0 +1,11 @@
+build:
+  version: c-1.2.3
+
+cards:
+  message: Welcome in the Card microservice STG
+  contactInfo:
+    name: "Chandan Singh- Developer"
+    email: "Chandan@abc.com"
+  phones:
+    - 9999999999
+    - 7777777777

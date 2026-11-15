@@ -1,0 +1,11 @@
+build:
+  version: 2.0
+
+accounts:
+  message: "Welcome to SBank accounts related qa APIs"
+  contactDetails:
+    name: "Tripti- QA-lead"
+    email: "Tripti@acb.com"
+  onCallSupport:
+    - 7777777777
+    - 8888888888

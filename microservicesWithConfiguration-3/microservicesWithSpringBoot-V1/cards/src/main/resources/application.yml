@@ -1,0 +1,36 @@
+server:
+  port: 9000
+spring:
+  profiles:
+    active:
+  application:
+    name: cards
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ''
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  pattern:
+    console: ${CONSOLE_LOG_PATTERN:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %cyan(%msg%n)}
+
+cardbuild:
+  version: c-1.0
+
+cards:
+  message: Welcome in the Card microservice
+  contactInfo:
+    name: "Chandan Singh"
+    email: "Chandan@abc.com"
+  phones:
+    - 9450323155
+    - 9450323154

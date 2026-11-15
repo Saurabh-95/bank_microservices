@@ -1,0 +1,38 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active:
+      - "prod"
+  application:
+    name: accounts
+  datasource:
+    url: "jdbc:h2:mem:testdb"
+    driverClassName: "org.h2.Driver"
+    username: sa
+    password: ''
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: "org.hibernate.dialect.H2Dialect"
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  pattern:
+    console: ${CONSOLE_LOG_PATTERN:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %cyan(%msg%n)}
+
+build:
+  version: 1.0
+
+accounts:
+  message: "Welcome to SBank accounts related local APIs"
+  contactDetails:
+    name: "Saurabh Shukla- developer"
+    email: "saurabh@acb.com"
+  onCallSupport:
+    - 9454147743
+    - 8826010292

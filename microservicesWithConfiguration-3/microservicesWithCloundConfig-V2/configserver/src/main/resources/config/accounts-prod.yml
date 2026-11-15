@@ -1,0 +1,11 @@
+build:
+  version: 3.0
+
+accounts:
+  message: "Welcome to SBank accounts related prod APIs"
+  contactDetails:
+    name: "Aadvik- Product Owner"
+    email: "Aadvik@acb.com"
+  onCallSupport:
+    - 000000000
+    - 111111111

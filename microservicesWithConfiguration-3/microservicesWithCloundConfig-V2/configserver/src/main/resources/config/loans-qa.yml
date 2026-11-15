@@ -1,0 +1,11 @@
+loansbuild:
+  version: L-1.0.UAT
+
+loans:
+  message: Welcome in the Loan microservice UAT
+  contactInfo:
+    name: "Chandan Singh-loan-Tester"
+    email: "Chandanltest@abc.com"
+  phones:
+    - 940000011
+    - 945000022

@@ -19,6 +19,8 @@ spring:
           #for public git repositories user name and password not required
           username: ${GITHUB_USERNAME}
           password: ${GITHUB_TOKEN}
+        monitor:
+          validation-filter-enabled: false
   rabbitmq:
     host: "localhost"
     port: 5672
@@ -36,5 +38,13 @@ logging:
   pattern:
     console: ${CONSOLE_LOG_PATTERN:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %cyan(%msg%n)}
 
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  cloud:
+    config:
+      server:
+        monitor:
 

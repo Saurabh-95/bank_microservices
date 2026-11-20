@@ -1,0 +1,14 @@
+
+# Maven build folders
+**/target/
+
+# IntelliJ IDEA folders
+**/.idea/
+
+# IntelliJ files
+**/*.iml
+**/*.ipr
+**/*.iws
+
+# Logs
+*.log

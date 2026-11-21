@@ -17,3 +17,7 @@
 .env
 .env.*
 !.env.example
+
+# Docker Compose environment files
+/microservicesWithConfiguration-3/microservicesWithCloundConfig-V2/docker-compose/prod.env
+/microservicesWithConfiguration-3/microservicesWithCloundConfig-V2/docker-compose/qa.env

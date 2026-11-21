@@ -15,21 +15,20 @@ services:
       timeout: 5s
       retries: 10
       start_period: 5s
-    networks:
-      - saurabh_network
+    environment:
+      RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER?set RABBITMQ_DEFAULT_USER in the env file}
+      RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS?set RABBITMQ_DEFAULT_PASS in the env file}
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
 
   configserver:
-    image: "saurabh0208/configserver:v3"
+    image: "saurabh0208/configserver:${IMAGE_TAG:-v3}"
     container_name: "configserver_ms"
-    restart: unless-stopped
     ports:
       - "8071:8071"
     env_file:
       - .env
-    deploy:
-      resources:
-        limits:
-          memory: 700m
     healthcheck:
       #curl command not secure
       #test: "curl --fail --silent localhost:8071/actuator/health/readiness|grep UP || exit 1"
@@ -48,75 +47,52 @@ services:
     depends_on:
       rabbit:
         condition: service_healthy
-    environment:
-      SPRING_RABBITMQ_HOST: "rabbit"
-    networks:
-      - saurabh_network
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
     logging:
       driver: "json-file"
 
   accounts:
-    image: "saurabh0208/accounts:v3"
+    image: "saurabh0208/accounts:${IMAGE_TAG:-v3}"
     container_name: "account_ms"
-    restart: unless-stopped
     ports:
       - "8080:8080"
-    deploy:
-      resources:
-        limits:
-          memory: 700m
     depends_on:
       configserver:
         condition: service_healthy
-    environment:
-      SPRING_RABBITMQ_HOST: "rabbit"
-      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
-      SPRING_PROFILES_ACTIVE: default
-    networks:
-      - saurabh_network
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
     logging:
       driver: "json-file"
 
   loans:
-    image: "saurabh0208/loans:v3"
+    image: "saurabh0208/loans:${IMAGE_TAG:-v3}"
     container_name: "loans_ms"
-    restart: unless-stopped
     ports:
       - "8090:8090"
-    deploy:
-      resources:
-        limits:
-          memory: 700m
     depends_on:
       configserver:
         condition: service_healthy
-    environment:
-      SPRING_RABBITMQ_HOST: rabbit
-      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
-      SPRING_PROFILES_ACTIVE: default
-    networks:
-      - saurabh_network
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
     logging:
       driver: "json-file"
+
+
   cards:
     image: "saurabh0208/cards:v3"
     container_name: "cards_ms"
-    restart: unless-stopped
     ports:
       - "9000:9000"
-    deploy:
-      resources:
-        limits:
-          memory: 700m
     depends_on:
       configserver:
         condition: service_healthy
-    environment:
-      SPRING_RABBITMQ_HOST: rabbit
-      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
-      SPRING_PROFILES_ACTIVE: default
-    networks:
-      - saurabh_network
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
     logging:
       driver: "json-file"
 

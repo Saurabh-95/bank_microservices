@@ -1,7 +1,62 @@
 name: spring-boot_MS
 services:
+  rabbit:
+    image: rabbitmq:4-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - saurabh_network
+
+  configserver:
+    image: "saurabh0208/configserver:v3"
+    container_name: "configserver_ms"
+    restart: unless-stopped
+    ports:
+      - "8071:8071"
+    env_file:
+      - .env
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    healthcheck:
+      #curl command not secure
+      #test: "curl --fail --silent localhost:8071/actuator/health/readiness|grep UP || exit 1"
+     #===============================#
+      # Checks whether the application is ready to handle requests by:
+      # 1. Establishing a TCP connection to the application on port 8071.
+      # 2. Sending an HTTP GET request to the Spring Boot readiness endpoint.
+      # 3. Verifying that the response contains "status":"UP".
+      # Docker marks the container as healthy if the readiness check succeeds;
+      # otherwise, the health check fails.
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8071 && printf 'GET /actuator/health/readiness HTTP/1.1\r\nHost:localhost\r\nConnection: close\r\n\r\n' >&3 && grep -q '\"status\":\"UP\"' <&3"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: "rabbit"
+    networks:
+      - saurabh_network
+    logging:
+      driver: "json-file"
+
   accounts:
-    image: "saurabh0208/accounts:v1"
+    image: "saurabh0208/accounts:v3"
     container_name: "account_ms"
     restart: unless-stopped
     ports:
@@ -10,13 +65,20 @@ services:
       resources:
         limits:
           memory: 700m
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: "rabbit"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      SPRING_PROFILES_ACTIVE: default
     networks:
       - saurabh_network
     logging:
       driver: "json-file"
 
   loans:
-    image: "saurabh0208/loans:v1"
+    image: "saurabh0208/loans:v3"
     container_name: "loans_ms"
     restart: unless-stopped
     ports:
@@ -25,12 +87,19 @@ services:
       resources:
         limits:
           memory: 700m
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      SPRING_PROFILES_ACTIVE: default
     networks:
       - saurabh_network
     logging:
       driver: "json-file"
   cards:
-    image: "saurabh0208/cards:v1"
+    image: "saurabh0208/cards:v3"
     container_name: "cards_ms"
     restart: unless-stopped
     ports:
@@ -39,10 +108,18 @@ services:
       resources:
         limits:
           memory: 700m
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      SPRING_PROFILES_ACTIVE: default
     networks:
       - saurabh_network
     logging:
       driver: "json-file"
+
 networks:
   saurabh_network:
     driver: bridge

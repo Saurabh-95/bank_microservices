@@ -1,0 +1,11 @@
+build:
+  version: c-1.0
+
+cards:
+  message: Welcome in the Card microservice
+  contactInfo:
+    name: "Chandan Singh"
+    email: "Chandan@abc.com"
+  phones:
+    - 9450323155
+    - 9450323154

@@ -21,3 +21,22 @@
 # Docker Compose environment files
 /microservicesWithConfiguration-3/microservicesWithCloundConfig-V2/docker-compose/prod.env
 /microservicesWithConfiguration-3/microservicesWithCloundConfig-V2/docker-compose/qa.env
+
+# MySQL Docker data
+/docker-data/
+../docker-data/
+
+
+# Environment files containing secrets
+*.env
+*.env.*
+
+# Allow safe example files
+!.env.example
+!*.env.example
+
+# Docker MySQL runtime data
+/docker-data/
+
+# Logs
+*.log

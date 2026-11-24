@@ -1,0 +1,11 @@
+build:
+  version: L-1.0
+
+loans:
+  message: Welcome in the Loan microservice
+  contactInfo:
+    name: "Chandan Singh-loan"
+    email: "Chandanl@abc.com"
+  phones:
+    - 9450323144
+    - 9450323143

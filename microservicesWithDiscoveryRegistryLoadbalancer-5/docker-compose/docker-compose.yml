@@ -1,0 +1,101 @@
+name: spring-boot_MS
+services:
+  rabbit:
+    image: rabbitmq:4-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    environment:
+      RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER?set RABBITMQ_DEFAULT_USER in the env file}
+      RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS?set RABBITMQ_DEFAULT_PASS in the env file}
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+  configserver:
+    image: "saurabh0208/configserver:${IMAGE_TAG:-v3}"
+    container_name: "configserver_ms"
+    ports:
+      - "8071:8071"
+    env_file:
+      - .env
+    healthcheck:
+      #curl command not secure
+      #test: "curl --fail --silent localhost:8071/actuator/health/readiness|grep UP || exit 1"
+     #===============================#
+      # Checks whether the application is ready to handle requests by:
+      # 1. Establishing a TCP connection to the application on port 8071.
+      # 2. Sending an HTTP GET request to the Spring Boot readiness endpoint.
+      # 3. Verifying that the response contains "status":"UP".
+      # Docker marks the container as healthy if the readiness check succeeds;
+      # otherwise, the health check fails.
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8071 && printf 'GET /actuator/health/readiness HTTP/1.1\r\nHost:localhost\r\nConnection: close\r\n\r\n' >&3 && grep -q '\"status\":\"UP\"' <&3"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+    logging:
+      driver: "json-file"
+
+  accounts:
+    image: "saurabh0208/accounts:${IMAGE_TAG:-v3}"
+    container_name: "account_ms"
+    ports:
+      - "8080:8080"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    logging:
+      driver: "json-file"
+
+  loans:
+    image: "saurabh0208/loans:${IMAGE_TAG:-v3}"
+    container_name: "loans_ms"
+    ports:
+      - "8090:8090"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    logging:
+      driver: "json-file"
+
+
+  cards:
+    image: "saurabh0208/cards:v3"
+    container_name: "cards_ms"
+    ports:
+      - "9000:9000"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    logging:
+      driver: "json-file"
+
+networks:
+  saurabh_network:
+    driver: bridge

@@ -1,0 +1,11 @@
+build:
+  version: L-1.0.P
+
+loans:
+  message: Welcome in the Loan microservice prod
+  contactInfo:
+    name: "Chandan Singh-loan-PO"
+    email: "ChandanlPO@abc.com"
+  phones:
+    - 940000000
+    - 945000000

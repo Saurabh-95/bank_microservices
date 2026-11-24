@@ -21,12 +21,6 @@ spring:
           password: ${GITHUB_TOKEN}
         monitor:
           validation-filter-enabled: false
-  rabbitmq:
-    host: "localhost"
-    port: 5672
-    username: guest
-    password: guest
-
 
 encrypt:
   key: "hg40ck96"

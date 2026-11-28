@@ -19,7 +19,7 @@ rem ==========================================================
 set "SCRIPT_DIR=%~dp0"
 for %%I in ("%SCRIPT_DIR%..") do set "PROJECT_ROOT=%%~fI"
 
-set "ALL_SERVICES=configserver accounts loans cards"
+set "ALL_SERVICES=configserver accounts loans cards eurekaserver"
 set "SERVICES=%ALL_SERVICES%"
 set "PARALLEL=0"
 set "PUSH=0"

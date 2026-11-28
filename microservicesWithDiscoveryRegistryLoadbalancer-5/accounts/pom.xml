@@ -130,7 +130,7 @@
 				<version>3.5.2</version>
 				<configuration>
 					<to>
-						<image>saurabh0208/${project.artifactId}:v3</image>
+						<image>saurabh0208/${project.artifactId}:v8</image>
 					</to>
 				</configuration>
 			</plugin>

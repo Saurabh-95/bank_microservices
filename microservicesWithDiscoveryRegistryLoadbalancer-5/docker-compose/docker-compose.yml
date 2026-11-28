@@ -91,6 +91,22 @@ services:
     logging:
       driver: "json-file"
 
+  loans1:
+    image: "saurabh0208/loans:${IMAGE_TAG:-v8}"
+    container_name: "loans_ms1"
+    ports:
+      - "8091:8090"
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+    logging:
+      driver: "json-file"
+
 
   cards:
     image: "saurabh0208/cards:v8"
